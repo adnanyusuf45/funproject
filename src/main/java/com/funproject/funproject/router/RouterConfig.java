@@ -21,6 +21,7 @@ public class RouterConfig {
                 .route()
                 .POST("api/registeruser",userHandler::registerUser)
                 .POST("api/loginuser",userHandler::loginUser)
+                .GET("api/listuser",userHandler::listUser)
                 .build();
     }
 }

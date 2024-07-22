@@ -5,6 +5,7 @@ import com.funproject.funproject.model.ResponseModel;
 import com.funproject.funproject.repository.UserRepository;
 import com.funproject.funproject.request.LoginUserRequest;
 import com.funproject.funproject.request.RegisterUserRequest;
+import com.funproject.funproject.response.ListUserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 public class UserHandler {
@@ -117,31 +120,39 @@ public class UserHandler {
 
                     });
 
-/*            if(user.getUsername().trim()==null ||user.getUsername().trim().equals("") || user.getPassword().trim()==null||user.getPassword().trim().equals("")){
-
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username dan / atau password kosong");
-
-            }
-
-
-            User usernameEntry = userRepository.findByUsername(user.getUsername().trim());
-
-            if(usernameEntry == null){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username / Password Tidak Cocok");
-            }
-
-            if(!usernameEntry.getPassword().equals(user.getPassword())){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username / Password Tidak Cocok");
-
-            }
-
-            return ResponseEntity.status(HttpStatus.OK).body("Sukses Login");*/
-
         }catch (Exception e){
 
             ResponseModel responseModel = ResponseModel.builder()
                     .respCode("10001")
                     .status("gagal login user")
+                    .respDescription("Internal Server Error")
+                    .build();
+
+            return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Mono.just(responseModel), ResponseModel.class);
+        }
+
+    }
+
+    public Mono<ServerResponse> listUser (ServerRequest request){
+
+        try {
+
+            List<User> listUsernameEntry = userRepository.findAll();
+
+            ListUserResponse listUserResponse = ListUserResponse.builder()
+                    .respCode("10000")
+                    .status("Sukses get list user")
+                    .respDescription("get list user success")
+                    .data(listUsernameEntry)
+                    .build();
+
+            return ServerResponse.ok().body(Mono.just(listUserResponse),ListUserResponse.class);
+
+        }catch (Exception e){
+
+            ResponseModel responseModel = ResponseModel.builder()
+                    .respCode("10001")
+                    .status("gagal get list user")
                     .respDescription("Internal Server Error")
                     .build();
 
