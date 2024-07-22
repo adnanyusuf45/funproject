@@ -22,6 +22,7 @@ public class RouterConfig {
                 .POST("api/registeruser",userHandler::registerUser)
                 .POST("api/loginuser",userHandler::loginUser)
                 .GET("api/listuser",userHandler::listUser)
+                .PUT("api/edituser/{id}",userHandler::editUser)
                 .build();
     }
 }
